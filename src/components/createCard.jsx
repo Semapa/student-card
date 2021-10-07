@@ -34,6 +34,9 @@ const CreateCard = () => {
     portfolio: {
       isRequired: {
         message: 'Поле "Портфолио" обязательно для заполнения'
+      },
+      isUrl: {
+        message: 'Поле "Портфолио" должно быть ссылкой'
       }
     }
   }
@@ -53,43 +56,56 @@ const CreateCard = () => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }))
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    localStorage.setItem('studentCard', JSON.stringify(data))
+  }
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center ">
         <div className="col-md-6 ">
           <h1>Создать</h1>
-          <TextField
-            label="Имя"
-            name="name"
-            value={data.name}
-            error={errors.name}
-            onChange={handleChange}
-          ></TextField>
-          <TextField
-            label="Фамилия"
-            name="lastName"
-            value={data.lastName}
-            error={errors.lastName}
-            onChange={handleChange}
-          ></TextField>
-          <TextField
-            type="number"
-            label="Год рождения"
-            name="year"
-            value={data.year}
-            error={errors.year}
-            onChange={handleChange}
-          ></TextField>
-          <TextField
-            label="Портфолио"
-            name="portfolio"
-            value={data.portfolio}
-            error={errors.portfolio}
-            onChange={handleChange}
-          ></TextField>
-          <button type="submit" className="btn btn-primary" disabled={!isValid}>
-            Создать
-          </button>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Имя"
+              name="name"
+              value={data.name}
+              error={errors.name}
+              onChange={handleChange}
+            ></TextField>
+            <TextField
+              label="Фамилия"
+              name="lastName"
+              value={data.lastName}
+              error={errors.lastName}
+              onChange={handleChange}
+            ></TextField>
+            <TextField
+              type="number"
+              label="Год рождения"
+              name="year"
+              value={data.year}
+              error={errors.year}
+              placeholder="1999"
+              onChange={handleChange}
+            ></TextField>
+            <TextField
+              label="Портфолио"
+              name="portfolio"
+              value={data.portfolio}
+              error={errors.portfolio}
+              placeholder="http://..."
+              onChange={handleChange}
+            ></TextField>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={!isValid}
+            >
+              Создать
+            </button>
+          </form>
         </div>
       </div>
     </div>

@@ -3,11 +3,6 @@ export function validator(data, config) {
 
   function validate(validateMethod, data, config) {
     let statusValidate
-    // console.group()
-    // console.log('validateMethod', validateMethod)
-    // console.log('data', data)
-    // console.log('config', config)
-    // console.groupEnd()
     switch (validateMethod) {
       case 'isRequired':
         statusValidate = data.trim() === ''
@@ -15,7 +10,15 @@ export function validator(data, config) {
       case 'length': {
         const currentDate = new Date().getFullYear()
         statusValidate = data.length !== config.value
-        if (!statusValidate) statusValidate = Number(data) > currentDate
+        if (!statusValidate)
+          statusValidate = Number(data) > currentDate || Number(data) < 1950
+        break
+      }
+      case 'isUrl': {
+        const urlRegExp =
+          /* eslint-disable-next-line */
+          /(http)(s?):\/\/(www\.)?[a-z0-9]+\.[a-z\.]+/g
+        statusValidate = !urlRegExp.test(data)
         break
       }
       default:
