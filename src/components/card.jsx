@@ -1,17 +1,27 @@
 import { React, useState, useEffect } from 'react'
+import { useHistory } from 'react-router'
 
 const Card = () => {
   const [data, setData] = useState()
+  const history = useHistory()
 
   useEffect(() => {
     const dataForm = localStorage.getItem('studentCard')
-    console.log('dataForm', dataForm)
     setData(JSON.parse(dataForm))
-    console.log(data)
-    return () => {
-      delete localStorage.studentCard
-    }
   }, [])
+
+  const handleAdd = () => {
+    history.push('/create')
+  }
+
+  const handleDelete = () => {
+    delete localStorage.studentCard
+    history.go(0)
+  }
+
+  const handleEdit = () => {
+    history.push('/create')
+  }
 
   return (
     <div className="container mt-5">
@@ -31,13 +41,20 @@ const Card = () => {
             <span className="fw-bold">Портфолио:</span>{' '}
             <a href={data.portfolio}>{data.portfolio}</a>
           </p>
-          <button className="btn btn-primary">Редактировать</button>
+          <button className="btn btn-primary me-4" onClick={handleEdit}>
+            Редактировать
+          </button>
+          <button className="btn btn-danger" onClick={handleDelete}>
+            Удалить
+          </button>
         </>
       ) : (
         <>
           <h2>Карточка студента</h2>
           <p>Нет данных</p>
-          <button className="btn btn-primary ">Добавить</button>
+          <button className="btn btn-primary" onClick={handleAdd}>
+            Добавить
+          </button>
         </>
       )}
     </div>

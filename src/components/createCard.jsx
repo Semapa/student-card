@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from 'react'
+import { useHistory } from 'react-router'
 import TextField from './textField'
 import { validator } from '../utils/validator'
+import 'bootstrap/js/dist/modal'
 
 const CreateCard = () => {
   const [data, setData] = useState({
@@ -9,7 +11,10 @@ const CreateCard = () => {
     year: '',
     portfolio: ''
   })
+
   const [errors, setErrors] = useState({})
+  const [isData, setIsData] = useState(false)
+  const history = useHistory()
 
   const validatorConfig = {
     name: {
@@ -42,6 +47,21 @@ const CreateCard = () => {
   }
 
   useEffect(() => {
+    const dataForm = localStorage.getItem('studentCard')
+    if (dataForm) {
+      setData(JSON.parse(dataForm))
+      setIsData(true)
+    } else {
+      setData({
+        name: '',
+        lastName: '',
+        year: '',
+        portfolio: ''
+      })
+    }
+  }, [])
+
+  useEffect(() => {
     validate()
   }, [data])
 
@@ -59,6 +79,14 @@ const CreateCard = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     localStorage.setItem('studentCard', JSON.stringify(data))
+  }
+
+  const handleBack = () => {
+    history.push('/')
+  }
+
+  const handleClose = () => {
+    history.push('/')
   }
 
   return (
@@ -98,14 +126,65 @@ const CreateCard = () => {
               placeholder="http://..."
               onChange={handleChange}
             ></TextField>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={!isValid}
-            >
-              Создать
-            </button>
+            {isData ? (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-secondary me-4"
+                  onClick={handleBack}
+                >
+                  Назад
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={!isValid}
+                  data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrop"
+                >
+                  Обновить
+                </button>
+              </>
+            ) : (
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={!isValid}
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+              >
+                Создать
+              </button>
+            )}
           </form>
+          {/* --- */}
+          <div
+            className="modal fade"
+            id="staticBackdrop"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabIndex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-body">Обновлено</div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    onClick={handleClose}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ---- */}
         </div>
       </div>
     </div>
